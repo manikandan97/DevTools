@@ -10,8 +10,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationView{
-            ListView()
-            MainView()
+            Sidebar()
+            EmptyView()
         }
         .toolbar{
             ToolbarItem(placement: .navigation){
@@ -28,20 +28,45 @@ struct ContentView: View {
     }
 }
 
-struct ListView : View {
-    var body: some View{
-        List{
-           Text("1 Test")
-            Text("2 Test")
-            Text("3 Test")
+
+
+struct Sidebar: View {
+    @ObservedObject var settingsCategories = CategoriesModel()
+    @State private var selectedCategory: Category?
+    var body: some View {
+        List() {
+            NavigationLink(
+                    destination: UnixTimeConverterView(),
+                    label: {
+                        HStack {
+                            Image(systemName: "folder")
+                            Text("Unix Timestamp Conversion")
+                        }
+            })
+            NavigationLink(
+                   destination: ColouPicker(),
+                    label: {
+                        HStack {
+                            Image(systemName: "folder")
+                            Text("Color Picker")
+                        }
+            })
         }
+        .background(.ultraThinMaterial)
+        .listStyle(SidebarListStyle())
+        .frame(minWidth: 200)
     }
 }
 
-struct MainView : View {
-    var body: some View{
-        Text("Mian List")
+// Second Column
+struct SettingsListView: View {
+    var settingsCategory: Category
+    @State private var selectedSetting: Setting?
+    var body: some View {
+        Text("Test1")
+        .navigationTitle(settingsCategory.name)
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
