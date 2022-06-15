@@ -9,23 +9,47 @@ import SwiftUI
 
 struct UnixTimeConverterView: View {
     
-    @State private var username: String = ""
+    @State private var userInput: String = ""
     @State private var localTime: String = ""
+    @State private var selectedType: String = "Unix Time milliseconds"
     
     var body: some View {
         VStack(alignment: .leading){
             HStack{
                 TextField(
                         "Unix Time input",
-                        text: $username
+                        text: $userInput,
+                        onEditingChanged: { (editingChanged) in
+                            let date = Date(timeIntervalSince1970: Double(userInput) ?? 0)
+                            let dateFormatter = DateFormatter()
+                            dateFormatter.dateStyle = .medium
+                            dateFormatter.timeStyle = .none
+                            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                            localTime = dateFormatter.string(from: date)
+                                            },
+                                            onCommit: {
+                                                
+                                        }
                 )
+                .onSubmit {
+                    let date = Date(timeIntervalSince1970: 1415637900)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateStyle = .medium
+                    dateFormatter.timeStyle = .none
+                    dateFormatter.dateFormat = "dd.MM.yy"
+                    localTime = dateFormatter.string(from: date)
+                }
                 .frame(width: 200.0)
                     .disableAutocorrection(true)
                     .border(.secondary)
                 
-                Menu("Input Type") {
-                    Button("Unix Time milliseconds", action: {})
-                    Button("Unix Time microseconds", action: {})
+                Menu(selectedType) {
+                    Button("Unix Time milliseconds", action: {
+                        selectedType = "Unix Time milliseconds";
+                    })
+                    Button("Unix Time microseconds", action: {
+                        selectedType = "Unix Time microseconds";
+                    })
                 }
                 .frame(width: 200.0)
             }.padding()
@@ -36,7 +60,7 @@ struct UnixTimeConverterView: View {
                 VStack(alignment: .leading){
                     Text("Local :")
                     HStack{
-                        TextField("Mon Apr 11 17:53:54 +0700 2022", text: $localTime)
+                        TextField(localTime, text: $localTime)
                             .frame(width: 250.0)
                             .disabled(true)
                         Button {
